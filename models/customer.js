@@ -54,8 +54,33 @@ class Customer {
   }
 
   // ********* Part 5- Create full names *********
-  get fullName() {
-    return `${this.firstName} ${this.lastName}`;
+  // get fullName() {
+  //   return `${this.firstName} ${this.lastName}`;
+  // }
+  static async getByName(fullName) {
+    const firstName = fullName.split(" ")[0];
+    const lastName = fullName.split(" ")[1];
+    const results = await db.query(
+      `SELECT id, 
+         first_name AS "firstName",  
+         last_name AS "lastName", 
+         phone, 
+         notes 
+        FROM customers WHERE first_name = $1 AND last_name = $2`,
+      [firstName, lastName]
+    );
+
+
+
+    const customer = results.rows[0];
+
+    if (customer === undefined) {
+      const err = new Error(`No such customer: ${id}`);
+      err.status = 404;
+      throw err;
+    }
+
+    return new Customer(customer);
   }
 
   /** get all reservations for this customer. */
