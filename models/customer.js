@@ -77,7 +77,7 @@ class Customer {
 
 
 
-    console.log(results);
+    // console.log(results);
 
     return results.rows.map(c => new Customer(c));
   }
