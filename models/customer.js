@@ -53,10 +53,36 @@ class Customer {
     return new Customer(customer);
   }
 
+  // ********* Part 8- add top 10 *********
+  static async getTopTen() {
+    //gets the 10 customers out of all customers who have made the most reservations
+    const results = await db.query(`
+      SELECT 
+         COUNT(c.id) AS "reservations",
+         c.id, 
+         c.first_name AS "firstName",  
+         c.last_name AS "lastName", 
+         c.phone, 
+         c.notes
+      
+       
+       FROM customers AS c
+       LEFT JOIN
+       reservations as r
+       ON
+       c.id = r.customer_id
+       GROUP BY c.id
+       ORDER BY COUNT(c.id) DESC
+       LIMIT 10`);
+
+
+
+    console.log(results);
+
+    return results.rows.map(c => new Customer(c));
+  }
+
   // ********* Part 5- Create full names *********
-  // get fullName() {
-  //   return `${this.firstName} ${this.lastName}`;
-  // }
   static async getByName(fullName) {
     const firstName = fullName.split(" ")[0];
     const lastName = fullName.split(" ")[1];

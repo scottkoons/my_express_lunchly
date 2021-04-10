@@ -11,7 +11,25 @@ const router = new express.Router();
 
 router.get("/", async function (req, res, next) {
     try {
+        if (req.query.fullName) {
+            console.log(req.query.fullName);
+            const fullName = req.query.fullName;
+            const customer = await Customer.getByName(fullName);
+            return res.render("customer_list.html", { customer });
+        }
         const customers = await Customer.all();
+        return res.render("customer_list.html", { customers });
+    } catch (err) {
+        return next(err);
+    }
+});
+
+// ********* Pafrt 8- add top 10 *********
+router.get("/top_ten", async function (req, res, next) {
+    try {
+        console.log("hi");
+        const customers = await Customer.getTopTen();
+        console.log(customers);
         return res.render("customer_list.html", { customers });
     } catch (err) {
         return next(err);
